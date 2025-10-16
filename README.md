@@ -107,6 +107,8 @@ Before you begin, ensure you have the following installed on your system:
     - Obtain `GOOGLE_CLIENT_ID` from the Google API Console.
     - For `EMAIL_PASS`, it's highly recommended to use a Google App Password.
 
+4.  Also remove the .git file to clear the previous git history.
+
 ## Running the Application
 
 ### Development Mode
