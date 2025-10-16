@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 
 const sendPasswordResetEmail = async (to, otp) => {
   const mailOptions = {
-    from: `"PrimeX App" <${process.env.EMAIL_USER}>`,
+    from: `"Your App" <${process.env.EMAIL_USER}>`,
     to,
     subject: "Your Password Reset OTP",
     html: `
@@ -31,11 +31,11 @@ const sendPasswordResetEmail = async (to, otp) => {
 
 const sendVerificationEmail = async (to, otp) => {
   const mailOptions = {
-    from: `"PrimeX App" <${process.env.EMAIL_USER}>`,
+    from: `"Your App" <${process.env.EMAIL_USER}>`,
     to,
-    subject: "Verify Your Email Address for PrimeX",
+    subject: "Verify Your Email Address for YourApp",
     html: `
-      <p>Welcome to PrimeX! Please use the following One-Time Password (OTP) to verify your email address.</p>
+      <p>Welcome to YourApp! Please use the following One-Time Password (OTP) to verify your email address.</p>
       <p>Your OTP is: <strong>${otp}</strong></p>
       <p>This OTP is valid for 10 minutes.</p>
     `,
