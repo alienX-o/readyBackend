@@ -1,4 +1,4 @@
-# primeX Backend
+# Ready to use Backend
 
 This is the backend server to which has on the go functionalities with Node.js, Express, and MySQL. It handles user authentication, profile management, and other core functionalities.
 
