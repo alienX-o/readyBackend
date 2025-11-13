@@ -1,9 +1,42 @@
 const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
+const readline = require("readline");
 
 const envExamplePath = path.join(__dirname, ".env.example");
 const envPath = path.join(__dirname, ".env");
+
+function askQuestion(query, isPassword = false) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    if (isPassword) {
+      // Mute stdout for password input
+      const onData = (char) => {
+        char = char.toString();
+        switch (char) {
+          case "\n":
+          case "\r":
+          case "\u0004":
+            process.stdin.pause();
+            break;
+          default:
+            process.stdout.write("\x1B[2K\x1B[200D" + query + Array(rl.line.length + 1).join("*"));
+            break;
+        }
+      };
+      process.stdin.on("data", onData);
+    }
+
+    rl.question(query, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
 
 async function setupDatabase() {
   // Load dependencies now that they are installed
@@ -68,6 +101,34 @@ async function setupDatabase() {
   }
 }
 
+async function configureEnvironment() {
+  console.log("\n[2/4] Configuring environment...");
+  if (!fs.existsSync(envPath)) {
+    fs.copyFileSync(envExamplePath, envPath);
+    console.log("✅ .env file created from .env.example.");
+  } else {
+    console.log("✅ .env file already exists.");
+  }
+
+  console.log("Please provide your database credentials:");
+
+  const dbHost = await askQuestion("Database Host (default: localhost): ") || "localhost";
+  const dbUser = await askQuestion("Database User (default: root): ") || "root";
+  const dbPassword = await askQuestion("Database Password: ", true);
+  const dbName = await askQuestion("Database Name (default: ready_backend_db): ") || "ready_backend_db";
+
+  let envContent = fs.readFileSync(envPath, "utf-8");
+
+  envContent = envContent.replace(/^DB_HOST=.*/m, `DB_HOST=${dbHost}`);
+  envContent = envContent.replace(/^DB_USER=.*/m, `DB_USER=${dbUser}`);
+  envContent = envContent.replace(/^DB_PASSWORD=.*/m, `DB_PASSWORD=${dbPassword}`);
+  envContent = envContent.replace(/^DB_NAME=.*/m, `DB_NAME=${dbName}`);
+
+  fs.writeFileSync(envPath, envContent);
+  console.log("✅ .env file updated with your database credentials.");
+  console.log("Please fill in the remaining values (Google OAuth, Nodemailer, etc.) in the .env file.");
+}
+
 async function main() {
   console.log("🚀 Starting project setup...");
 
@@ -76,15 +137,8 @@ async function main() {
   execSync("npm install", { stdio: "inherit" });
   console.log("✅ Dependencies installed.");
 
-  // Step 2: Create .env file if it doesn't exist
-  console.log("\n[2/4] Configuring environment...");
-  if (!fs.existsSync(envPath)) {
-    fs.copyFileSync(envExamplePath, envPath);
-    console.log("✅ .env file created. Please update it with your credentials.");
-  } else {
-    console.log("✅ .env file already exists.");
-  }
-
+  // Step 2: Configure environment
+  await configureEnvironment();
   // Step 3: Setup database
   console.log("\n[3/4] Setting up database...");
   await setupDatabase();

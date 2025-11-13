@@ -37,19 +37,19 @@ Before you begin, ensure you have the following installed on your system:
 
     This single command will:
     - Install all required `npm` dependencies.
-    - Create a `.env` file from the `.env.example` template.
+    - Create a `.env` file and **prompt you for your database credentials**.
     - Connect to your database server and create the database and tables if they don't exist.
     - Remove the existing `.git` directory to clear the template's history.
 
     ```bash
     npm run setup
     ```
-
-3.  **Update your environment variables:**
-
-    Open the newly created `.env` file and fill in your specific credentials for the database, Google OAuth, Nodemailer, and create a secret API key.
-
-    > **Important:** If the setup script failed during the database step, it's likely due to incorrect credentials in the `.env` file. Correct them and run `npm run setup` again.
+    
+3.  **Update remaining environment variables:**
+    
+    The script will handle your database credentials. You still need to open the `.env` file and fill in your specific keys for **Google OAuth**, **Nodemailer**, and the **JWT Secret**.
+    
+    > **Important:** If the setup script fails, it's likely due to incorrect database credentials. Just run `npm run setup` again and re-enter them.
 
 ## Running the Application
 
