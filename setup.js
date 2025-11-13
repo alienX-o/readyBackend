@@ -146,7 +146,20 @@ async function main() {
     console.log("✅ No .git directory found to remove.");
   }
 
-  console.log("\n🎉 Setup complete! You can now run the server with 'npm run dev'.");
+  console.log("\n🎉 Setup complete! You can now run the server with 'npm run dev'. Now running the server for the first time the .env.example file and setup files will be automatically removed now");
+  const setupPath = path.join(__dirname, "setup.js");
+  const envExamplePath = path.join(__dirname, ".env.example");
+  if (fs.existsSync(setupPath)) {
+    fs.unlinkSync(setupPath);
+    console.log("✅ setup.js file removed.");
+  }
+  if (fs.existsSync(envExamplePath)) {
+    fs.unlinkSync(envExamplePath);
+    console.log("✅ .env.example file removed.");
+  }
+
+  
+  execSync("npm run dev", { stdio: "inherit" });
 }
 
 main();
