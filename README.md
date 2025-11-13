@@ -24,90 +24,32 @@ Before you begin, ensure you have the following installed on your system:
 - [npm](https://www.npmjs.com/) (comes with Node.js)
 - A [MySQL](https://www.mysql.com/downloads/) server (or a compatible alternative like MariaDB).
 
-## Database Setup
-
-1.  Connect to your MySQL server and create a new database for the project.
-
-    ```sql
-    CREATE DATABASE your_db_name;
-    ```
-
-2.  Use the newly created database.
-
-    ```sql
-    USE your_db_name;
-    ```
-
-3.  Run the following SQL command to create the necessary `users` table with the specified schema.
-
-    ```sql
-    CREATE TABLE users (
-        id INT NOT NULL AUTO_INCREMENT,
-        name VARCHAR(100) DEFAULT NULL,
-        sex ENUM('M','F','O') DEFAULT NULL,
-        dob DATE DEFAULT NULL,
-        mobile VARCHAR(20) DEFAULT NULL,
-        username VARCHAR(50) NOT NULL UNIQUE,
-        email VARCHAR(100) NOT NULL UNIQUE,
-        password_hash VARCHAR(255) NOT NULL,
-        profile_url VARCHAR(255) DEFAULT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        isActive TINYINT(1) NOT NULL DEFAULT 0,
-        reset_token VARCHAR(255) DEFAULT NULL,
-        reset_token_expires DATETIME DEFAULT NULL,
-        PRIMARY KEY (id)
-    );
-    ```
-
 ## Installation & Configuration
 
 1.  **Clone the repository:**
 
     ```bash
     git clone <your-repository-url>
-    cd readyBackend
+    cd ready-backend
     ```
 
-2.  **Install dependencies:**
+2.  **Run the setup script:**
+
+    This single command will:
+    - Install all required `npm` dependencies.
+    - Create a `.env` file from the `.env.example` template.
+    - Connect to your database server and create the database and tables if they don't exist.
+    - Remove the existing `.git` directory to clear the template's history.
 
     ```bash
-    npm install
+    npm run setup
     ```
 
-3.  **Create a configuration file:**
+3.  **Update your environment variables:**
 
-    Create a file named `.env` in the root of the `readyBackend` directory and add the following environment variables.
+    Open the newly created `.env` file and fill in your specific credentials for the database, Google OAuth, Nodemailer, and create a secret API key.
 
-    ```properties
-    # Server Port
-    PORT=5000
-
-    # Database Connection (MySQL Locally)
-    DB_HOST=localhost
-    DB_PORT=3306
-    DB_USER=your_db_user
-    DB_PASSWORD=your_db_password
-    DB_NAME=your_db_name
-
-
-    # JSON Web Token
-    JWT_SECRET=your_super_secret_jwt_key
-
-    # Google OAuth Client ID
-    GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
-
-    # Nodemailer (for sending emails)
-    # Use an App Password if you have 2FA enabled on your Google account
-    EMAIL_USER=your_email@gmail.com
-    EMAIL_PASS=your_google_app_password
-    ```
-
-    - Replace `your_db_user` and `your_db_password` with your MySQL credentials.
-    - Set `JWT_SECRET` to a long, random, and secret string.
-    - Obtain `GOOGLE_CLIENT_ID` from the Google API Console.
-    - For `EMAIL_PASS`, it's highly recommended to use a Google App Password.
-
-4.  Also remove the .git file to clear the previous git history.
+    > **Important:** If the setup script failed during the database step, it's likely due to incorrect credentials in the `.env` file. Correct them and run `npm run setup` again.
 
 ## Running the Application
 
