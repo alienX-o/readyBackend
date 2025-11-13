@@ -13,28 +13,21 @@ function askQuestion(query, isPassword = false) {
   });
 
   return new Promise((resolve) => {
-    if (isPassword) {
-      // Mute stdout for password input
-      const onData = (char) => {
-        char = char.toString();
-        switch (char) {
-          case "\n":
-          case "\r":
-          case "\u0004":
-            process.stdin.pause();
-            break;
-          default:
-            process.stdout.write("\x1B[2K\x1B[200D" + query + Array(rl.line.length + 1).join("*"));
-            break;
-        }
-      };
-      process.stdin.on("data", onData);
-    }
-
     rl.question(query, (answer) => {
       rl.close();
       resolve(answer);
     });
+
+    if (isPassword) {
+      // Mute stdout for password input
+      // This is a workaround since readline doesn't have a built-in password option.
+      const onData = () => {
+        const chars = "*".repeat(rl.line.length);
+        process.stdout.cursorTo(query.length);
+        process.stdout.write(chars);
+      };
+      rl.input.on("data", onData);
+    }
   });
 }
 
@@ -112,7 +105,7 @@ async function configureEnvironment() {
 
   console.log("Please provide your database credentials:");
 
-  const dbHost = await askQuestion("Database Host (default: localhost): ") || "localhost";
+  const dbHost = (await askQuestion("Database Host (default: localhost): ")) || "localhost";
   const dbUser = await askQuestion("Database User (default: root): ") || "root";
   const dbPassword = await askQuestion("Database Password: ", true);
   const dbName = await askQuestion("Database Name (default: ready_backend_db): ") || "ready_backend_db";
