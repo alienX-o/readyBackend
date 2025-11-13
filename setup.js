@@ -1,14 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
-const mysql = require("mysql2/promise");
 
 const envExamplePath = path.join(__dirname, ".env.example");
 const envPath = path.join(__dirname, ".env");
 
 async function setupDatabase() {
-  // Load environment variables from .env file
+  // Load dependencies now that they are installed
   require("dotenv").config();
+  const mysql = require("mysql2/promise");
 
   const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
